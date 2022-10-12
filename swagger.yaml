@@ -1,0 +1,121 @@
+openapi: 3.0.1
+info:
+  title: Membership platform
+  description: API for the membership sercice
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:5001
+
+paths:
+  /reports/benefits/top:
+    get:
+      responses:
+        200:
+          description: Get top three benefits for each venue for the las 180 days
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopBenefitsResponse'
+
+  /reports/venues/{venue_id}/benefits:
+    get:
+      parameters:
+        - in: path
+          name: venue_id
+          schema:
+            type: integer
+          required: true
+          description: The venue id.
+        - in: query
+          name: person_id
+          schema:
+            type: integer
+          required: True
+          description: The user id
+        - in: query
+          name: date
+          schema:
+            type: string
+          required: False
+          description: The date
+          example: 2022-10-01
+      responses:
+        200:
+          description: Get available benefits for the user for a specific venue at the given time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableVenueBenefitsResponse'
+        404:
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Venue not found
+          description: Venue not found
+
+  /reports/venues/{venue_id}/benefits/inactive:
+    get:
+      parameters:
+        - in: path
+          name: venue_id
+          schema:
+            type: integer
+          required: true
+          description: The venue id.
+      responses:
+        200:
+          description: Get lists of the inactivity periods of the benefits for the specific venue which have had inactivity periods during the last 180 days.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InactiveBenefitsResponse'
+
+components:
+  schemas:
+    TopBenefitsResponse:
+      type: object
+      properties:
+        "venueId":
+          type: integer
+        topBenefits180Days:
+          type: array
+          items:
+            type: object
+            properties:
+              benefitId:
+                type: integer
+              usageCount:
+                type: integer
+
+    AvailableVenueBenefitsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          venueId:
+            type: integer
+          title:
+            type: string
+          recurrence:
+            type: string
+
+    InactiveBenefitsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          benefitId:
+            type: integer
+          inactivityPeriods:
+            type: array
+            items:
+              type: object
+              properties:
+                startTime:
+                  type: string
+                endTime:
+                  type: string
