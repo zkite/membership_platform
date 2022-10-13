@@ -8,6 +8,19 @@ servers:
   - url: http://localhost:5000
 
 paths:
+  /health:
+    get:
+      responses:
+        200:
+          description: Service healch check
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  ping:
+                    type: string
+
   /reports/benefits/top:
     get:
       responses:
@@ -77,7 +90,7 @@ components:
     TopBenefitsResponse:
       type: object
       properties:
-        "venueId":
+        venueId:
           type: integer
         topBenefits180Days:
           type: array
