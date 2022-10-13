@@ -11,4 +11,4 @@ RUN apk update && \
     pip install --upgrade pip setuptools && \
     pip install -r ${APP_DIR}/requirements.txt
 
-CMD ["python", "-b :5000", "wsgi:app", "--reload"]
+CMD ["gunicorn", "-b :5000", "wsgi:app", "--reload"]
